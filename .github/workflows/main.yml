@@ -15,9 +15,10 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
-      - name: install PyGad
+      - name: Install dependencies
         run: |
           pip install pygad
+          pip install pandas
       - name: Run Models
         run: |
           python run_all.py > results.csv
