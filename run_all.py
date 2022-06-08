@@ -70,25 +70,26 @@ datasets = {
 }
 
 if __name__ == '__main__':
-    print("Model\tTime\tdTrain\tdTest\tdTotal")
-    for model in models["split_two"].keys():
-        for d in datasets.keys():
-            for i, m in enumerate(models["split_two"][model].get_all()):
-                results = []
-                for i in range(5):
-                    metrics = {}
-                    df = pd.read_csv(datasets[d], sep="\t")
-                    orig_num = df.shape[0]
-                    start = time.time()
-                    df = m.split_two(df, 0.7)
-                    metrics["time"] = time.time() - start
-                    metrics.update(assess_split(df, orig_num, 0.7, None))
-                    results.append(metrics)
-                results = pd.DataFrame(results)
-                print("\t".join([
-                    f"{model} {i + 1}",
-                    f"{results['time'].mean():.3} ({results['time'].std():.3})",
-                    f"{results['train_diff'].mean():.3} ({results['train_diff'].std():.3})",
-                    f"{results['test_diff'].mean():.3} ({results['test_diff'].std():.3})",
-                    f"{results['total_diff'].mean():.3} ({results['total_diff'].std():.3})",
-                ]))
+    with open((Path(__file__).parent / "results.tsv"), "w") as output:
+        print("Model\tTime\tdTrain\tdTest\tdTotal", file=output)
+        for model in models["split_two"].keys():
+            for d in datasets.keys():
+                for i, m in enumerate(models["split_two"][model].get_all()):
+                    results = []
+                    for i in range(5):
+                        metrics = {}
+                        df = pd.read_csv(datasets[d], sep="\t")
+                        orig_num = df.shape[0]
+                        start = time.time()
+                        df = m.split_two(df, 0.7)
+                        metrics["time"] = time.time() - start
+                        metrics.update(assess_split(df, orig_num, 0.7, None))
+                        results.append(metrics)
+                    results = pd.DataFrame(results)
+                    print("\t".join([
+                        f"{model} {i + 1}",
+                        f"{results['time'].mean():.3} ({results['time'].std():.3})",
+                        f"{results['train_diff'].mean():.3} ({results['train_diff'].std():.3})",
+                        f"{results['test_diff'].mean():.3} ({results['test_diff'].std():.3})",
+                        f"{results['total_diff'].mean():.3} ({results['total_diff'].std():.3})",
+                    ]), file=output)
