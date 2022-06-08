@@ -15,15 +15,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
-      - name: Set up python 3.7
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-      - name: Install dependencies
-        run: |
-          $CONDA/bin/conda env update --file environment.yml --name base
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Run Models
         run: |
-          $CONDA/bin/python run_all.py > results.csv
+          python run_all.py > results.csv
           
