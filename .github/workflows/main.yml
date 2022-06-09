@@ -40,9 +40,6 @@ jobs:
           git config user.email "joeres.roman@web.de"
           git config user.name "Old-Shatterhand"
           git commit -m "Auto-upload of results"
-      - name: fetch from master
-        run: |
-          git fetch origin main
       - name: push results to main
         run: |
           git push origin HEAD:master
