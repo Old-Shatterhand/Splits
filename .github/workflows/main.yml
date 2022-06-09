@@ -22,6 +22,8 @@ jobs:
         run: |
           pip install pygad
           pip install pandas
+          pip install networkx
+          pip install community
       - name: Run Models
         run: |
           python run_all.py
@@ -31,7 +33,7 @@ jobs:
           git remote set-url origin git@github.com:Old-Shatterhand/Splits.git
       - name: Stage results
         run: |
-          git add results.tsv
+          git add results*
       - name: commit results
         run: |
           git config user.email "joeres.roman@web.de"

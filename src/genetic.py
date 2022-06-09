@@ -1,6 +1,6 @@
 from src.base import BaseSplitter
 from pygad import GA
-import pandas as pd
+
 
 class GeneticSplitter(BaseSplitter):
     def __init__(self, **kwargs):
@@ -10,10 +10,14 @@ class GeneticSplitter(BaseSplitter):
         self.drugs = None
         self.prob_lower_bound = None
 
+    @property
+    def author(self):
+        return "Roman"
+
     @staticmethod
     def get_all():
         return [
-            GeneticSplitter(**{"G": 1000, "P": 3, "KP": 2, "MP": 0.1, "CP": 0.2, "D": 1, "B": 1})
+            GeneticSplitter(**{"G": 100, "P": 3, "KP": 2, "MP": 0.1, "CP": 0.2, "D": 1, "B": 1})
         ]
 
     def split_two(self, df, train_frac):
@@ -90,7 +94,7 @@ class GeneticSplitter(BaseSplitter):
         As the genetic algorithm is a maximization algorithm, we have to negate the minimization score
         """
         return - (
-                self.params["D"] * (len(drop_data) / self.prob_lower_bound) +
+                self.params["D"] * (len(drop_data) / len(self.df)) +
                 self.params["B"] * (
                         abs(len(train_data) / (len(self.df) - len(drop_data)) - train_frac) +
                         abs(len(train_drugs) / len(self.drugs) - train_frac) +
