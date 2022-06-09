@@ -1,7 +1,6 @@
 import pandas as pd
 import networkx as nx
 import numpy as np
-import community
 from src.base import BaseSplitter
 
 
@@ -29,11 +28,11 @@ class LouvainSplitter(BaseSplitter):
 
     @staticmethod
     def _split_groups(
-            inter: pd.DataFrame,
-            col_name: str = "Target_ID",
-            bin_size: int = 10,
-            train_frac: float = 0.7,
-            val_frac: float = 0.2,
+        inter: pd.DataFrame,
+        col_name: str = "Target_ID",
+        bin_size: int = 10,
+        train_frac: float = 0.7,
+        val_frac: float = 0.2,
     ) -> pd.DataFrame:
         """Split data by protein (cold-target)
         Tries to ensure good size of all sets by sorting the prots by number of interactions
@@ -54,11 +53,15 @@ class LouvainSplitter(BaseSplitter):
         val = []
         test = []
         for i in range(0, len(sorted_index), bin_size):
-            subset = sorted_index[i: i + bin_size]
-            train_bin = list(np.random.choice(subset, min(len(subset), train_prop), replace=False))
+            subset = sorted_index[i : i + bin_size]
+            train_bin = list(
+                np.random.choice(subset, min(len(subset), train_prop), replace=False)
+            )
             train += train_bin
             subset = [x for x in subset if x not in train_bin]
-            val_bin = list(np.random.choice(subset, min(len(subset), val_prop), replace=False))
+            val_bin = list(
+                np.random.choice(subset, min(len(subset), val_prop), replace=False)
+            )
             val += val_bin
             subset = [x for x in subset if x not in val_bin]
             test += subset
@@ -76,10 +79,7 @@ class LouvainSplitter(BaseSplitter):
         G = nx.from_pandas_edgelist(df, source="Target_ID", target="Drug_ID")
         all_drugs = set(df["Drug_ID"].unique())
         all_prots = set(df["Target_ID"].unique())
-        communities = community.best_partition(G)
-        s = [set() for _ in range(max(communities.values()) + 1)]
-        for k, v in communities.items():
-            s[v].add(k)
+        s = list(nx.algorithms.community.louvain_communities(G))
         communities = []
         for i in s:
             drugs = i.intersection(all_drugs)
@@ -94,9 +94,12 @@ class LouvainSplitter(BaseSplitter):
                     "drugids": drugs,
                 }
             )
-        communities = pd.DataFrame(communities).sort_values("edgen").reset_index(drop=True)
+        communities = (
+            pd.DataFrame(communities).sort_values("edgen").reset_index(drop=True)
+        )
         for name, row in communities.iterrows():
-            idx = df["Target_ID"].isin(row["protids"]) & df["Drug_ID"].isin(row["drugids"])
+            idx = df["Target_ID"].isin(row["protids"]) & df["Drug_ID"].isin(
+                row["drugids"]
+            )
             df.loc[idx, "community"] = "com" + str(int(name))
-        df = df[df["community"].notna()]
         return df
