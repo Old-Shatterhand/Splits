@@ -1,0 +1,2 @@
+Model	Author	Data	Time	dTrain	dVal	dTest	dTotal	Params
+louvain 1	John Doe	random_100x1000	0.0347 (0.00571)	0.3 (0.0)	-0.2 (0.0)	-0.1 (1.55e-17)	-0.595 (0.00689)	{}
