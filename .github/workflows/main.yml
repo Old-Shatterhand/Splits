@@ -27,7 +27,7 @@ jobs:
           ls -l
           python run_all.py > results.csv
           ls -l
-          git remove -v
+          git remote -v
         working-directory: ./
       - name: switch from HTTPS to SSH
         run: git remote set-url origin git@github.com:Old-Shatterhand/Splits.git
