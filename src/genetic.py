@@ -13,7 +13,7 @@ class GeneticSplitter(BaseSplitter):
     @staticmethod
     def get_all():
         return [
-            GeneticSplitter(**{"G": 100, "P": 3, "KP": 2, "MP": 0.1, "CP": 0.2, "D": 1, "B": 1})
+            GeneticSplitter(**{"G": 1000, "P": 3, "KP": 2, "MP": 0.1, "CP": 0.2, "D": 1, "B": 1})
         ]
 
     def split_two(self, df, train_frac):
