@@ -23,5 +23,6 @@ jobs:
         run: |
           ls -l
           python run_all.py > results.csv
+          ls -l
         working-directory: ./
           
