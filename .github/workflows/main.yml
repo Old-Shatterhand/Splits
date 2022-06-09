@@ -25,7 +25,7 @@ jobs:
       - name: Run Models
         run: |
           ls -l
-          python run_all.py > results.csv
+          python run_all.py
           ls -l
           git remote -v
         working-directory: ./
@@ -34,7 +34,7 @@ jobs:
           git remote set-url origin git@github.com:Old-Shatterhand/Splits.git
       - name: Stage results
         run: |
-          git add results.*
+          git add results.tsv
       - name: commit results
         run: |
           git config user.email "joeres.roman@web.de"
