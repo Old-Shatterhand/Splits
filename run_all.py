@@ -76,7 +76,7 @@ if __name__ == '__main__':
             for d in datasets.keys():
                 for i, m in enumerate(models["split_two"][model].get_all()):
                     results = []
-                    for i in range(5):
+                    for _ in range(5):
                         metrics = {}
                         df = pd.read_csv(datasets[d], sep="\t")
                         orig_num = df.shape[0]
