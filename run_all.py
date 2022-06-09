@@ -75,12 +75,13 @@ models = {
 datasets = {
     "random_100x1000": (Path(__file__).parent / 'data' / 'random_100x1000.tsv'),
     "glylec": (Path(__file__).parent / 'data' / 'glylec.tsv'),
+    "glass": (Path(__file__).parent / 'data' / 'glass.tsv'),
 }
 
 
 def run(d, fun, val_split):
     results = []
-    for _ in range(5):
+    for _ in range(3):
         metrics = {}
         df = pd.read_csv(datasets[d], sep="\t")
         orig_num = df.shape[0]
