@@ -30,12 +30,19 @@ jobs:
           git remote -v
         working-directory: ./
       - name: switch from HTTPS to SSH
-        run: git remote set-url origin git@github.com:Old-Shatterhand/Splits.git
+        run: |
+          git remote set-url origin git@github.com:Old-Shatterhand/Splits.git
       - name: Stage results
-        run: git add results.*
+        run: |
+          git add results.*
       - name: commit results
-        run: git commit -m "Auto-upload of results"
+        run: |
+          git config user.email "joeres.roman@web.de"
+          git config user.name "Old-Shatterhand"
+          git commit -m "Auto-upload of results"
       - name: fetch from master
-        run: git fetch origin main
+        run: |
+          git fetch origin main
       - name: push results to main
-        run: git push origin HEAD:master
+        run: |
+          git push origin HEAD:master
