@@ -3,7 +3,10 @@
 name: Run models
 
 # Controls when the workflow will run
-on: [push]
+on:
+  push:
+    branches:
+      - main
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,4 +28,13 @@ jobs:
           python run_all.py > results.csv
           ls -l
         working-directory: ./
-          
+      - name: switch from HTTPS to SSH
+        run: git remote set-url origin ${{ secrets.ssh }}
+      - name: Stage results
+        run: git add results.*
+      - name: commit results
+        run: git commit -m "Auto-upload of results"
+      - name: fetch from master
+        run: git fetch origin main
+      - name: push results to main
+        run: git push origin HEAD:master
