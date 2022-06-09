@@ -40,6 +40,7 @@ jobs:
           git config user.email "joeres.roman@web.de"
           git config user.name "Old-Shatterhand"
           git commit -m "Auto-upload of results"
-      - name: push results to main
-        run: |
-          git push origin HEAD:master
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github-tokan: ${{ secrets.GITHUB_TOKEN }}
