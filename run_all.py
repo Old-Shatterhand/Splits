@@ -7,20 +7,19 @@ import time
 from src.louvain import LouvainSplitter
 
 
-def generate_random_graph():
-    with open("data/random_100x1000.tsv", "w") as data:
+def generate_random_graph(nodes=100, edges=1000):
+    """Generate a random graph with the given number of nodes and edges"""
+    with open(f"data/random_{nodes}x{edges}.tsv", "w") as data:
         s = np.random.normal(loc=0.5)
-        print(s)
         while 0.6 < s or s < 0.4:
             s = np.random.normal(loc=0.5)
-            print(s)
-        pd_split = int(s * 100)
+        pd_split = int(s * nodes)
         drugs = [f"D{i:05d}" for i in range(pd_split)]
-        prots = [f"T{i:05d}" for i in range(100 - pd_split)]
+        prots = [f"T{i:05d}" for i in range(nodes - pd_split)]
         data.write("Drug_ID\tTarget_ID\tY\n")
 
         edges = set()
-        for i in range(1000):
+        for i in range(edges):
             drug = np.random.choice(drugs)
             prot = np.random.choice(prots)
             while (drug, prot) in edges:
@@ -58,16 +57,21 @@ def assess_split(df: pd.DataFrame, orig_num: int, train_frac: float, val_frac: f
         return dict(train_diff=train_diff, test_diff=test_diff, total_diff=total_diff)
 
 
+# register all models to be evaluated ...
 models = {
+    # ... for datasets to be split into two parts ...
     "split_two": {
         "genetic": GeneticSplitter,
         "louvain": LouvainSplitter,
     },
+    # ... and for datasets to be split into three parts.
     "split_three": {
         "louvain": LouvainSplitter,
     }
 }
 
+
+# register all datasets to be used to evaluate the performance of the models
 datasets = {
     "random_100x1000": (Path(__file__).parent / 'data' / 'random_100x1000.tsv')
 }
@@ -88,30 +92,32 @@ def run(d, fun, val_split):
 
 
 def run_all():
+    """Run all combinations of model configurations and datasets to find the best one."""
+    # First, evaluate the models registered for splitting in two parts.
     with open((Path(__file__).parent / "results_split_two.tsv"), "w") as output:
-        print("Model\tAuthor\tTime\tdTrain\tdTest\tdTotal\tParams", file=output)
+        print("Model\tAuthor\tData\tTime\tdTrain\tdTest\tdTotal\tParams", file=output)
         for model in models["split_two"].keys():
             for d in datasets.keys():
                 for i, m in enumerate(models["split_two"][model].get_all()):
                     results = run(d, lambda x: m.split_two(x, 0.7), None)
                     print("\t".join([
-                        f"{model} {i + 1}",
-                        m.author,
+                        f"{model} {i + 1}", m.author, d,
                         f"{results['time'].mean():.3} ({results['time'].std():.3})",
                         f"{results['train_diff'].mean():.3} ({results['train_diff'].std():.3})",
                         f"{results['test_diff'].mean():.3} ({results['test_diff'].std():.3})",
                         f"{results['total_diff'].mean():.3} ({results['total_diff'].std():.3})",
                         m.parameter,
                     ]), file=output)
+
+    # Then, evaluate the models registered for splitting into three parts.
     with open((Path(__file__).parent / f"results_split_three.tsv"), "w") as output:
-        print("Model\tAuthor\tTime\tdTrain\tdVal\tdTest\tdTotal\tParams", file=output)
+        print("Model\tAuthor\tData\tTime\tdTrain\tdVal\tdTest\tdTotal\tParams", file=output)
         for model in models["split_three"].keys():
             for d in datasets.keys():
                 for i, m in enumerate(models["split_three"][model].get_all()):
                     results = run(d, lambda x: m.split_three(x, 0.7, 0.2), 0.2)
                     print("\t".join([
-                        f"{model} {i + 1}",
-                        m.author,
+                        f"{model} {i + 1}", m.author, d,
                         f"{results['time'].mean():.3} ({results['time'].std():.3})",
                         f"{results['train_diff'].mean():.3} ({results['train_diff'].std():.3})",
                         f"{results['val_diff'].mean():.3} ({results['val_diff'].std():.3})",
