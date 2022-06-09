@@ -23,7 +23,7 @@ jobs:
           pip install pygad
           pip install pandas
           pip install networkx
-          pip install community
+          pip install python_louvain
       - name: Run Models
         run: |
           python run_all.py
