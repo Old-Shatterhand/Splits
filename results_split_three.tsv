@@ -1,3 +1,0 @@
-Model	Author	Data	Time	dTrain	dVal	dTest	dTotal	Params
-louvain 1	John Doe	random_100x1000	0.0345 (0.00234)	-0.263 (0.0684)	-0.2 (0.0)	-0.1 (1.55e-17)	0.0 (0.0)	{}
-louvain 1	John Doe	glylec	4.16 (0.215)	-0.0524 (0.0)	-0.2 (0.0)	-0.1 (1.55e-17)	0.0 (0.0)	{}

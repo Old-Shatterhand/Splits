@@ -30,7 +30,9 @@ def generate_random_graph(nodes=100, edges=1000):
             data.write("\t".join([drug, prot, str(np.random.normal())]) + "\n")
 
 
-def assess_split(df: pd.DataFrame, orig_num: int, train_frac: float, val_frac: float) -> dict:
+def assess_split(
+    df: pd.DataFrame, orig_num: int, train_frac: float, val_frac: float
+) -> dict:
     """Assess the split.
     Args:
         df (pd.DataFrame): DataFrame "Drug_ID", "Target_ID", "split" and "Y" columns.
@@ -52,7 +54,12 @@ def assess_split(df: pd.DataFrame, orig_num: int, train_frac: float, val_frac: f
     test_diff = df[df["split"] == "test"].shape[0] / df.shape[0] - test_frac
     total_diff = (df.shape[0] - orig_num) / orig_num
     if val_frac is not None:
-        return dict(train_diff=train_diff, val_diff=val_diff, test_diff=test_diff, total_diff=total_diff)
+        return dict(
+            train_diff=train_diff,
+            val_diff=val_diff,
+            test_diff=test_diff,
+            total_diff=total_diff,
+        )
     else:
         return dict(train_diff=train_diff, test_diff=test_diff, total_diff=total_diff)
 
@@ -67,15 +74,15 @@ models = {
     # ... and for datasets to be split into three parts.
     "split_three": {
         "louvain": LouvainSplitter,
-    }
+    },
 }
 
 
 # register all datasets to be used to evaluate the performance of the models
 datasets = {
-    "random_100x1000": (Path(__file__).parent / 'data' / 'random_100x1000.tsv'),
-    "glylec": (Path(__file__).parent / 'data' / 'glylec.tsv'),
-    "glass": (Path(__file__).parent / 'data' / 'glass.tsv'),
+    "random_100x1000": (Path(__file__).parent / "data" / "random_100x1000.tsv"),
+    "glylec": (Path(__file__).parent / "data" / "glylec.tsv"),
+    "glass": (Path(__file__).parent / "data" / "glass.tsv"),
 }
 
 
@@ -96,38 +103,56 @@ def run(d, fun, val_split):
 def run_all():
     """Run all combinations of model configurations and datasets to find the best one."""
     # First, evaluate the models registered for splitting in two parts.
-    with open((Path(__file__).parent / "results_split_two.tsv"), "w") as output:
-        print("Model\tAuthor\tData\tTime\tdTrain\tdTest\tdTotal\tParams", file=output)
-        for model in models["split_two"].keys():
-            for d in datasets.keys():
-                for i, m in enumerate(models["split_two"][model].get_all()):
-                    results = run(d, lambda x: m.split_two(x, 0.7), None)
-                    print("\t".join([
-                        f"{model} {i + 1}", m.author, d,
-                        f"{results['time'].mean():.3} ({results['time'].std():.3})",
-                        f"{results['train_diff'].mean():.3} ({results['train_diff'].std():.3})",
-                        f"{results['test_diff'].mean():.3} ({results['test_diff'].std():.3})",
-                        f"{results['total_diff'].mean():.3} ({results['total_diff'].std():.3})",
-                        m.parameter,
-                    ]), file=output)
+    output = []
+
+    for model in models["split_two"].keys():
+        for d in datasets.keys():
+            for i, m in enumerate(models["split_two"][model].get_all()):
+                results = run(d, lambda x: m.split_two(x, 0.7), None)
+                output.append(
+                    {
+                        "model": "model",
+                        "author": m.author,
+                        "data": d,
+                        "time": results["time"].mean(),
+                        "time_std": results["time"].std(),
+                        "dTrain": results["train_diff"].mean(),
+                        "dTrain_std": results["train_diff"].std(),
+                        "dTest": results["test_diff"].mean(),
+                        "dTest_std": results["test_diff"].std(),
+                        "dTotal": results["total_diff"].mean(),
+                        "dTotal_std": results["total_diff"].std(),
+                        "params": i,
+                    }
+                )
+    pd.DataFrame(output).to_csv("results_split_two.tsv", sep="\t", index=False)
 
     # Then, evaluate the models registered for splitting into three parts.
-    with open((Path(__file__).parent / f"results_split_three.tsv"), "w") as output:
-        print("Model\tAuthor\tData\tTime\tdTrain\tdVal\tdTest\tdTotal\tParams", file=output)
-        for model in models["split_three"].keys():
-            for d in datasets.keys():
-                for i, m in enumerate(models["split_three"][model].get_all()):
-                    results = run(d, lambda x: m.split_three(x, 0.7, 0.2), 0.2)
-                    print("\t".join([
-                        f"{model} {i + 1}", m.author, d,
-                        f"{results['time'].mean():.3} ({results['time'].std():.3})",
-                        f"{results['train_diff'].mean():.3} ({results['train_diff'].std():.3})",
-                        f"{results['val_diff'].mean():.3} ({results['val_diff'].std():.3})",
-                        f"{results['test_diff'].mean():.3} ({results['test_diff'].std():.3})",
-                        f"{results['total_diff'].mean():.3} ({results['total_diff'].std():.3})",
-                        m.parameter,
-                    ]), file=output)
+    output = []
+    for model in models["split_three"].keys():
+        for d in datasets.keys():
+            for i, m in enumerate(models["split_three"][model].get_all()):
+                results = run(d, lambda x: m.split_three(x, 0.7, 0.2), 0.2)
+                output.append(
+                    {
+                        "model": "model",
+                        "author": m.author,
+                        "data": d,
+                        "time": results["time"].mean(),
+                        "time_std": results["time"].std(),
+                        "dTrain": results["train_diff"].mean(),
+                        "dTrain_std": results["train_diff"].std(),
+                        "dVal": results["val_diff"].mean(),
+                        "dVal_std": results["val_diff"].std(),
+                        "dTest": results["test_diff"].mean(),
+                        "dTest_std": results["test_diff"].std(),
+                        "dTotal": results["total_diff"].mean(),
+                        "dTotal_std": results["total_diff"].std(),
+                        "params": i,
+                    }
+                )
+    pd.DataFrame(output).to_csv("results_split_three.tsv", sep="\t", index=False)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_all()
