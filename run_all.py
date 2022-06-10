@@ -80,7 +80,7 @@ models = {
 
 # register all datasets to be used to evaluate the performance of the models
 datasets = {
-    "random_100x1000": (Path(__file__).parent / "data" / "random_100x1000.tsv"),
+    # "random_100x1000": (Path(__file__).parent / "data" / "random_100x1000.tsv"),
     "glylec": (Path(__file__).parent / "data" / "glylec.tsv"),
     "glass_all": (Path(__file__).parent / "data" / "glass_all.tsv"),
     "glass_posneg": (Path(__file__).parent / "data" / "glass_posneg.tsv"),

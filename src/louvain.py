@@ -85,7 +85,7 @@ class LouvainSplitter(BaseSplitter):
         G = nx.from_pandas_edgelist(df, source="Target_ID", target="Drug_ID")
         all_drugs = set(df["Drug_ID"].unique())
         all_prots = set(df["Target_ID"].unique())
-        s = list(nx.algorithms.community.louvain_communities(G))
+        s = list(nx.algorithms.community.louvain_communities(G, resolution=1.5))
         communities = []
         for i in s:
             drugs = i.intersection(all_drugs)
@@ -103,7 +103,8 @@ class LouvainSplitter(BaseSplitter):
         communities = (
             pd.DataFrame(communities).sort_values("edgen").reset_index(drop=True)
         )
-        self.params = json.dumps({"communities": len(communities)})
+        self.params = {"communities": len(communities)}
+        print(communities[['protn', 'drugn', 'edgen']].to_string())  
         for name, row in communities.iterrows():
             idx = df["Target_ID"].isin(row["protids"]) & df["Drug_ID"].isin(
                 row["drugids"]
