@@ -82,7 +82,8 @@ models = {
 datasets = {
     "random_100x1000": (Path(__file__).parent / "data" / "random_100x1000.tsv"),
     "glylec": (Path(__file__).parent / "data" / "glylec.tsv"),
-    "glass": (Path(__file__).parent / "data" / "glass.tsv"),
+    "glass_all": (Path(__file__).parent / "data" / "glass_all.tsv"),
+    "glass_posneg": (Path(__file__).parent / "data" / "glass_posneg.tsv"),
 }
 
 

@@ -2,11 +2,17 @@ import pandas as pd
 import networkx as nx
 import numpy as np
 from src.base import BaseSplitter
+import json
 
 
 class LouvainSplitter(BaseSplitter):
     def __init__(self, **kwargs):
         super(LouvainSplitter, self).__init__(**kwargs)
+
+    @property
+    def author(self):
+        """The authors name of the splitting implementation"""
+        return "Ilya"
 
     @staticmethod
     def get_all():
@@ -23,7 +29,7 @@ class LouvainSplitter(BaseSplitter):
     def split_three(self, df, train_frac, val_frac):
         super(LouvainSplitter, self).split_three(df, train_frac, val_frac)
         df = self._get_communities(df)
-        df = self._split_groups(df, "community", 10, train_frac, 0)
+        df = self._split_groups(df, "community", 10, train_frac, val_frac)
         return df
 
     @staticmethod
@@ -71,10 +77,10 @@ class LouvainSplitter(BaseSplitter):
         inter.loc[train_idx, "split"] = "train"
         inter.loc[val_idx, "split"] = "val"
         inter.loc[test_idx, "split"] = "test"
+        inter = inter[inter['split'].notna()]
         return inter
 
-    @staticmethod
-    def _get_communities(df: pd.DataFrame) -> pd.DataFrame:
+    def _get_communities(self, df: pd.DataFrame) -> pd.DataFrame:
         """Assigns each interaction to a community, based on Louvain algorithm."""
         G = nx.from_pandas_edgelist(df, source="Target_ID", target="Drug_ID")
         all_drugs = set(df["Drug_ID"].unique())
@@ -97,6 +103,7 @@ class LouvainSplitter(BaseSplitter):
         communities = (
             pd.DataFrame(communities).sort_values("edgen").reset_index(drop=True)
         )
+        self.params = json.dumps({"communities": len(communities)})
         for name, row in communities.iterrows():
             idx = df["Target_ID"].isin(row["protids"]) & df["Drug_ID"].isin(
                 row["drugids"]
