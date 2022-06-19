@@ -20,6 +20,10 @@ class LouvainSplitter(BaseSplitter):
             LouvainSplitter(),
         ]
 
+    @property
+    def name(self):
+        return "Louvain"
+
     def split_two(self, df, train_frac):
         super(LouvainSplitter, self).split_two(df, train_frac)
         df = self._get_communities(df)
@@ -104,7 +108,6 @@ class LouvainSplitter(BaseSplitter):
             pd.DataFrame(communities).sort_values("edgen").reset_index(drop=True)
         )
         self.params = {"communities": len(communities)}
-        print(communities[['protn', 'drugn', 'edgen']].to_string())  
         for name, row in communities.iterrows():
             idx = df["Target_ID"].isin(row["protids"]) & df["Drug_ID"].isin(
                 row["drugids"]

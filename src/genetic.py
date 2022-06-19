@@ -20,6 +20,10 @@ class GeneticSplitter(BaseSplitter):
             GeneticSplitter(**{"G": 100, "P": 3, "KP": 2, "MP": 0.1, "CP": 0.2, "D": 1, "B": 1})
         ]
 
+    @property
+    def name(self):
+        return "Genetic"
+
     def split_two(self, df, train_frac):
         super(GeneticSplitter, self).split_two(df, train_frac)
         self.df = df

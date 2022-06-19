@@ -89,7 +89,8 @@ datasets = {
 
 def run(d, fun, val_split):
     results = []
-    for _ in range(3):
+    for i in range(1):
+        print(f"\rRun {i + 1}/{1}", end="")
         metrics = {}
         df = pd.read_csv(datasets[d], sep="\t")
         orig_num = df.shape[0]
@@ -98,6 +99,7 @@ def run(d, fun, val_split):
         metrics["time"] = time.time() - start
         metrics.update(assess_split(df, orig_num, 0.7, val_split))
         results.append(metrics)
+    print("\rDone")
     return pd.DataFrame(results)
 
 
@@ -109,10 +111,11 @@ def run_all():
     for model in models["split_two"].keys():
         for d in datasets.keys():
             for i, m in enumerate(models["split_two"][model].get_all()):
+                print(f"Split-2: Model: {m.name} on dataset {d}")
                 results = run(d, lambda x: m.split_two(x, 0.7), None)
                 output.append(
                     {
-                        "model": "model",
+                        "model": m.name,
                         "author": m.author,
                         "data": d,
                         "time": results["time"].mean(),
@@ -126,17 +129,20 @@ def run_all():
                         "params": i,
                     }
                 )
-    pd.DataFrame(output).to_csv("results_split_two.tsv", sep="\t", index=False)
+    df = pd.DataFrame(output)
+    df.sort_values(by=["dTrain"], ascending=False, key=abs, axis=1, inplace=True)
+    df.to_csv("results_split_two.tsv", sep="\t", index=False, float_format="%.4f")
 
     # Then, evaluate the models registered for splitting into three parts.
     output = []
     for model in models["split_three"].keys():
         for d in datasets.keys():
             for i, m in enumerate(models["split_three"][model].get_all()):
+                print(f"Split-2: Model: {m.name} on dataset {d}")
                 results = run(d, lambda x: m.split_three(x, 0.7, 0.2), 0.2)
                 output.append(
                     {
-                        "model": "model",
+                        "model": m.name,
                         "author": m.author,
                         "data": d,
                         "time": results["time"].mean(),
@@ -152,7 +158,9 @@ def run_all():
                         "params": i,
                     }
                 )
-    pd.DataFrame(output).to_csv("results_split_three.tsv", sep="\t", index=False)
+    df = pd.DataFrame(output)
+    df.sort_values(by=["dTrain"], ascending=False, key=abs, axis=1, inplace=True)
+    df.to_csv("results_split_three.tsv", sep="\t", index=False, float_format="%.4f")
 
 
 if __name__ == "__main__":

@@ -16,6 +16,11 @@ class BaseSplitter:
         """Get the parameters of the algorithm"""
         return json.dumps(self.params)
 
+    @property
+    def name(self):
+        """Get the name of the model"""
+        return "Basic"
+
     @staticmethod
     def get_all():
         """Return a list with all hyperparameter setting you want to test"""
