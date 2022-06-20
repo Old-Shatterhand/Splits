@@ -1,0 +1,2 @@
+model	author	data	time	time_std	dTrain	dTrain_std	dTest	dTest_std	dTotal	dTotal_std	params
+Genetic	Roman	glylec	64.3631		0.0020		-0.0020		-0.4779		0
