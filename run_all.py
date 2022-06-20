@@ -69,11 +69,11 @@ models = {
     # ... for datasets to be split into two parts ...
     "split_two": {
         "genetic": GeneticSplitter,
-        "louvain": LouvainSplitter,
+        # "louvain": LouvainSplitter,
     },
     # ... and for datasets to be split into three parts.
     "split_three": {
-        "louvain": LouvainSplitter,
+        # "louvain": LouvainSplitter,
     },
 }
 
@@ -82,8 +82,8 @@ models = {
 datasets = {
     # "random_100x1000": (Path(__file__).parent / "data" / "random_100x1000.tsv"),
     "glylec": (Path(__file__).parent / "data" / "glylec.tsv"),
-    "glass_all": (Path(__file__).parent / "data" / "glass_all.tsv"),
-    "glass_posneg": (Path(__file__).parent / "data" / "glass_posneg.tsv"),
+    # "glass_all": (Path(__file__).parent / "data" / "glass_all.tsv"),
+    # "glass_posneg": (Path(__file__).parent / "data" / "glass_posneg.tsv"),
 }
 
 
@@ -129,9 +129,10 @@ def run_all():
                         "params": i,
                     }
                 )
-    df = pd.DataFrame(output)
-    df.sort_values(by=["dTrain"], ascending=False, key=abs, axis=1, inplace=True)
-    df.to_csv("results_split_two.tsv", sep="\t", index=False, float_format="%.4f")
+    if output:
+        df = pd.DataFrame(output)
+        df.sort_values(by=["dTrain"], ascending=False, key=abs, inplace=True)
+        df.to_csv("results_split_two.tsv", sep="\t", index=False, float_format="%.4f")
 
     # Then, evaluate the models registered for splitting into three parts.
     output = []
@@ -158,9 +159,10 @@ def run_all():
                         "params": i,
                     }
                 )
-    df = pd.DataFrame(output)
-    df.sort_values(by=["dTrain"], ascending=False, key=abs, axis=1, inplace=True)
-    df.to_csv("results_split_three.tsv", sep="\t", index=False, float_format="%.4f")
+    if output:
+        df = pd.DataFrame(output)
+        df.sort_values(by=["dTrain"], ascending=False, key=abs, inplace=True)
+        df.to_csv("results_split_three.tsv", sep="\t", index=False, float_format="%.4f")
 
 
 if __name__ == "__main__":
