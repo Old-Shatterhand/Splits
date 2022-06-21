@@ -69,11 +69,11 @@ models = {
     # ... for datasets to be split into two parts ...
     "split_two": {
         "genetic": GeneticSplitter,
-        # "louvain": LouvainSplitter,
+        "louvain": LouvainSplitter,
     },
     # ... and for datasets to be split into three parts.
     "split_three": {
-        # "louvain": LouvainSplitter,
+        "louvain": LouvainSplitter,
     },
 }
 
@@ -82,8 +82,8 @@ models = {
 datasets = {
     # "random_100x1000": (Path(__file__).parent / "data" / "random_100x1000.tsv"),
     "glylec": (Path(__file__).parent / "data" / "glylec.tsv"),
-    # "glass_all": (Path(__file__).parent / "data" / "glass_all.tsv"),
-    # "glass_posneg": (Path(__file__).parent / "data" / "glass_posneg.tsv"),
+    "glass_all": (Path(__file__).parent / "data" / "glass_all.tsv"),
+    "glass_posneg": (Path(__file__).parent / "data" / "glass_posneg.tsv"),
 }
 
 
