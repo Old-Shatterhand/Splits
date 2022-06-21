@@ -131,7 +131,7 @@ def run_all():
                 )
     if output:
         df = pd.DataFrame(output)
-        df.sort_values(by=["data", "dTrain"], key=abs, inplace=True)
+        df.sort_values(by=["data", "dTrain"], key=lambda x: abs(x) if isinstance(x, float) else x, inplace=True)
         df.to_csv("results_split_two.tsv", sep="\t", index=False, float_format="%.4f")
 
     # Then, evaluate the models registered for splitting into three parts.
@@ -161,7 +161,7 @@ def run_all():
                 )
     if output:
         df = pd.DataFrame(output)
-        df.sort_values(by=["data", "dTrain"], key=abs, inplace=True)
+        df.sort_values(by=["data", "dTrain"], key=lambda x: abs(x) if isinstance(x, float) else x, inplace=True)
         df.to_csv("results_split_three.tsv", sep="\t", index=False, float_format="%.4f")
 
 
