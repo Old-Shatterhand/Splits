@@ -69,11 +69,11 @@ models = {
     # ... for datasets to be split into two parts ...
     "split_two": {
         "genetic": GeneticSplitter,
-        "louvain": LouvainSplitter,
+        # "louvain": LouvainSplitter,
     },
     # ... and for datasets to be split into three parts.
     "split_three": {
-        "louvain": LouvainSplitter,
+        # "louvain": LouvainSplitter,
     },
 }
 
@@ -82,14 +82,14 @@ models = {
 datasets = {
     # "random_100x1000": (Path(__file__).parent / "data" / "random_100x1000.tsv"),
     "glylec": (Path(__file__).parent / "data" / "glylec.tsv"),
-    "glass_all": (Path(__file__).parent / "data" / "glass_all.tsv"),
-    "glass_posneg": (Path(__file__).parent / "data" / "glass_posneg.tsv"),
+    # "glass_all": (Path(__file__).parent / "data" / "glass_all.tsv"),
+    # "glass_posneg": (Path(__file__).parent / "data" / "glass_posneg.tsv"),
 }
 
 
 def run(d, fun, val_split):
     results = []
-    for i in range(3):
+    for i in range(1):
         print(f"\rRun {i + 1}/{1}", end="")
         metrics = {}
         df = pd.read_csv(datasets[d], sep="\t")
@@ -131,7 +131,11 @@ def run_all():
                 )
     if output:
         df = pd.DataFrame(output)
-        df.sort_values(by=["data", "dTrain"], key=lambda x: x if isinstance(x, str) else abs(x), inplace=True)
+        df.sort_values(
+            by=["data", "dTrain"],
+            key=lambda col: col.map(lambda x: str(x) if str(x)[0] != "-" else str(x)[1:]),
+            inplace=True
+        )
         df.to_csv("results_split_two.tsv", sep="\t", index=False, float_format="%.4f")
 
     # Then, evaluate the models registered for splitting into three parts.
@@ -161,7 +165,11 @@ def run_all():
                 )
     if output:
         df = pd.DataFrame(output)
-        df.sort_values(by=["data", "dTrain"], key=lambda x: x if isinstance(x, str) else abs(x), inplace=True)
+        df.sort_values(
+            by=["data", "dTrain"],
+            key=lambda col: col.map(lambda x: str(x) if str(x)[0] != "-" else str(x)[1:]),
+            inplace=True
+        )
         df.to_csv("results_split_three.tsv", sep="\t", index=False, float_format="%.4f")
 
 
