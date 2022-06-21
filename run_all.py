@@ -89,7 +89,7 @@ datasets = {
 
 def run(d, fun, val_split):
     results = []
-    for i in range(1):
+    for i in range(3):
         print(f"\rRun {i + 1}/{1}", end="")
         metrics = {}
         df = pd.read_csv(datasets[d], sep="\t")
