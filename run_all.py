@@ -89,7 +89,7 @@ datasets = {
 
 def run(d, fun, val_split):
     results = []
-    for i in range(1):
+    for i in range(3):
         print(f"\rRun {i + 1}/{1}", end="")
         metrics = {}
         df = pd.read_csv(datasets[d], sep="\t")
@@ -131,7 +131,7 @@ def run_all():
                 )
     if output:
         df = pd.DataFrame(output)
-        df.sort_values(by=["dTrain"], ascending=False, key=abs, inplace=True)
+        df.sort_values(by=["data", "dTrain"], key=abs, inplace=True)
         df.to_csv("results_split_two.tsv", sep="\t", index=False, float_format="%.4f")
 
     # Then, evaluate the models registered for splitting into three parts.
@@ -161,7 +161,7 @@ def run_all():
                 )
     if output:
         df = pd.DataFrame(output)
-        df.sort_values(by=["dTrain"], ascending=False, key=abs, inplace=True)
+        df.sort_values(by=["data", "dTrain"], key=abs, inplace=True)
         df.to_csv("results_split_three.tsv", sep="\t", index=False, float_format="%.4f")
 
 
