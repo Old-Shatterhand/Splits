@@ -1,0 +1,4 @@
+model	author	data	time	time_std	dTrain	dTrain_std	dVal	dVal_std	dTest	dTest_std	dTotal	dTotal_std	params
+Louvain	Ilya	glylec	10.5867		-0.1813		0.2807		-0.0995		-0.8466		0
+Louvain	Ilya	glass_all	19.1002		-0.0402		-0.0033		0.0435		-0.0611		0
+Louvain	Ilya	glass_posneg	4.1917		0.0264		0.0065		-0.0328		-0.1173		0
