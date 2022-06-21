@@ -1,2 +1,7 @@
 model	author	data	time	time_std	dTrain	dTrain_std	dTest	dTest_std	dTotal	dTotal_std	params
-Genetic	Roman	glylec	54.2728		-0.0241		0.0241		-0.4838		0
+Genetic	Roman	glass_all	843.5844		-0.0111		0.0111		-0.5008		0
+Louvain	Ilya	glass_all	15.6419		-0.0211		0.0211		-0.0601		0
+Genetic	Roman	glass_posneg	75.9706		0.0019		-0.0019		-0.5002		0
+Louvain	Ilya	glass_posneg	2.9120		-0.1082		0.1082		-0.1167		0
+Louvain	Ilya	glylec	8.5805		0.0124		-0.0124		-0.8675		0
+Genetic	Roman	glylec	54.6019		-0.0214		0.0214		-0.4856		0
