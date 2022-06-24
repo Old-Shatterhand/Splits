@@ -73,6 +73,7 @@ models = {
     },
     # ... and for datasets to be split into three parts.
     "split_three": {
+        "genetic": GeneticSplitter,
         "louvain": LouvainSplitter,
     },
 }
@@ -175,3 +176,4 @@ def run_all():
 
 if __name__ == "__main__":
     run_all()
+    # run("glylec", lambda x: models["split_three"]["genetic"].get_all()[0].split_three(x, 0.7, 0.2), 0.2)
